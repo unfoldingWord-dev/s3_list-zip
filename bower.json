@@ -1,0 +1,25 @@
+{
+  "name": "S3-Downloader",
+  "authors": [
+    "unfoldingWord"
+  ],
+  "description": "A tool for viewing a S3 bucket, and download a zipped file of all the assets.",
+  "main": "index.html",
+  "moduleType": [],
+  "keywords": [
+    "s3",
+    "download",
+    "list",
+    "amazon"
+  ],
+  "license": "MIT",
+  "homepage": "http://unfoldingword.org",
+  "private": true,
+  "dependencies": {
+    "jszip": "Stuk/jszip#^2.5.0",
+    "jquery": "^2.2.0",
+    "jszip-utils": "^0.0.2",
+    "file-saver": "*",
+    "bootstrap": "^3.3.6"
+  }
+}
