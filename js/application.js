@@ -3,8 +3,8 @@
  */
 $(document).ready(function() {
   $('.zip-files').packageFiles({
-    bucketUrl: 'https://s3-us-west-1.amazonaws.com/test-data.missionaldigerati.org',
-    assetPath: 'assets',
+    bucketUrl: BUCKET_URL,
+    assetPath: S3B_ROOT_DIR,
     onPackagingStart: startedPackaging,
     onProgressChange: progressUpdated,
     onPackagingComplete: completedPackaging,
