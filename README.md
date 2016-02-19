@@ -11,3 +11,5 @@ Once you have cloned the repository, you will need to install the required javas
 ```
 bower install .
 ```
+
+You should also open the `index.html` file, and set the S3 configurations for your bucket.
