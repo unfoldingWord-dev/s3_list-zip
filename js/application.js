@@ -7,7 +7,9 @@ $(document).ready(function() {
     assetPath: 'assets',
     onPackagingStart: startedPackaging,
     onProgressChange: progressUpdated,
-    onPackagingComplete: completedPackaging
+    onPackagingComplete: completedPackaging,
+    usingS3ListingLibrary: true,
+    s3ListingLibraryIgnorePath: S3BL_IGNORE_PATH
   });
 });
 /**

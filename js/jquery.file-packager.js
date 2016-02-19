@@ -4,7 +4,7 @@
  * library will retrieve a listing from you s3 account, and will package up any files in that
  * directory.  This library requires the following Javascript libraries:
  * - JSZip (https://stuk.github.io/jszip/)
- * - JSZipUtils (https://github.com/Stuk/jszip-utils) 
+ * - JSZipUtils (https://github.com/Stuk/jszip-utils)
  */
 (function ($) {
   /**
@@ -85,7 +85,11 @@
    */
   $.fn.packageFiles.retrieveFiles = function() {
     var deferred = $.Deferred();
-    $.get(settings.bucketUrl + '?prefix=' + settings.assetPath)
+    var s3Url = settings.bucketUrl + '?delimiter=/&prefix=' + settings.assetPath + '/';
+    if (settings.usingS3ListingLibrary) {
+      s3Url = createS3ListingURL();
+    }
+    $.get(s3Url)
       .done(function(data) {
         var xml = $(data);
         var files = $.map(xml.find('Contents'), function(item) {
@@ -133,18 +137,52 @@
     return pathname.split('/').pop().split('.').length > 1;
   }
   /**
+   * Create the s3 URL based on the s3 Bucket Listing Library at https://github.com/rgrp/s3-bucket-listing
+   *
+   * @return {String} The new s3 URL
+   * @access public
+   */
+  function createS3ListingURL() {
+    var s3_rest_url = settings.bucketUrl;
+    s3_rest_url += '?delimiter=/';
+    var rx = '.*[?&]prefix=' + settings.assetPath + '([^&]+)(&.*)?$';
+    var prefix = '';
+    if (settings.s3ListingLibraryIgnorePath === false) {
+      var prefix = location.pathname.replace(/^\//, settings.assetPath);
+    }
+    var match = location.search.match(rx);
+    if (match) {
+      prefix = settings.assetPath + match[1];
+    } else {
+      if (settings.s3ListingLibraryIgnorePath) {
+        var prefix = settings.assetPath;
+      }
+    }
+    if (prefix) {
+      // make sure we end in /
+      var prefix = prefix.replace(/\/$/, '') + '/';
+      s3_rest_url += '&prefix=' + prefix;
+    }
+    return s3_rest_url;
+  }
+  /**
    * The defaults for the plugin
    *
-   * bucketUrl            - This variable tells the script where your bucket XML listing is, and where the files are.
-   * 												If the variable is left empty, the script will use the same hostname as the index.html.
-   * 								    		(default '')
-   * 								      	* Do NOT put a trailing '/', e.g. https://BUCKET.s3-REGION.amazonaws.com/
-   * 								       	* Do NOT put S3 website URL, e.g. https://BUCKET.s3-website-REGION.amazonaws.com
-   * assetPath            - The path to the assets in the s3 bucket
-   * onProgressChange     - Callback when progress is made on the zipping. Provides a progress integer for the percent complete.
-   * onPackagingStart     - Callback when the packaging has been started.
-   * onPackagingComplete  - Callback when the packaging has been completed.
-   * packageName  - The name of the final package
+   * bucketUrl              - This variable tells the script where your bucket XML listing is, and where the files are.
+   * 													If the variable is left empty, the script will use the same hostname as the index.html.
+   * 								    			(default '')
+   * 								      		* Do NOT put a trailing '/', e.g. https://BUCKET.s3-REGION.amazonaws.com/
+   * 								       		* Do NOT put S3 website URL, e.g. https://BUCKET.s3-website-REGION.amazonaws.com
+   * assetPath              - The path to the assets in the s3 bucket
+   * onProgressChange       - Callback when progress is made on the zipping. Provides a progress integer for the percent complete.
+   * onPackagingStart       - Callback when the packaging has been started.
+   * onPackagingComplete    - Callback when the packaging has been completed.
+   * packageName            - The name of the final package
+   *
+   * These settings are specifically used with the S3 Bucket Listing Library at https://github.com/rgrp/s3-bucket-listing
+   *
+   * S3ListingLibraryIgnorePath   - If you are using the s3 bucket listing library, are you ignoring the path?
+   * usingS3ListingLibrary        - Are you using the s3 bucket listing library
    *
    * @type {Object}
    */
@@ -154,7 +192,9 @@
     onProgressChange: function() {},
     onPackagingStart: function() {},
     onPackagingComplete: function() {},
-    packageName: 'files.zip'
+    packageName: 'files.zip',
+    s3ListingLibraryIgnorePath: false,
+    usingS3ListingLibrary: false
   };
 
 }(jQuery));
