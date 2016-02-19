@@ -1,7 +1,7 @@
 S3 Listing & Zip Downloader
 ===========================
 
-This application provides a list view for you s3 bucket using the (s3 Bucket Listing Library)[https://github.com/rgrp/s3-bucket-listing].  It also provides the ability to download a zipped folder of all assets that you are currently looking at.  This library uses (Bootstrap)[http://getbootstrap.com/] for a nice look and feel.
+This application provides a list view for you s3 bucket using the [s3 Bucket Listing Library](https://github.com/rgrp/s3-bucket-listing).  It also provides the ability to download a zipped folder of all assets that you are currently looking at.  This library uses [Bootstrap](http://getbootstrap.com/) for a nice look and feel.
 
 Running the App
 ---------------
